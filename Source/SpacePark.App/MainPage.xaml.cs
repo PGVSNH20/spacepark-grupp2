@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using SpacePark.App.Classes;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -23,14 +24,17 @@ namespace SpacePark.App
     public sealed partial class MainPage : Page
     {
         public string Example = "Hello";
+        public List<User> Users;
+
         public MainPage()
         {
             this.InitializeComponent();
-        }
 
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
+            Users = new List<User>
+            {
+                new User("Nisse", "Jonsson"),
+                new User("Luke", "Skywalker")
+            };
         }
     }
 }

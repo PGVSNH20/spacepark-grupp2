@@ -5,11 +5,12 @@
     xmlns:local="using:SpacePark.App"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <Grid x:Name="RootGrid" Margin="0" Background="Black">
+        <Grid x:Name="RootGrid" Margin="0" Background="DarkSlateGray">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -24,7 +25,13 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="1" Text="SpacePark" FontSize="30" FontFamily="Selawik" TextAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
-            <ScrollViewer Grid.Row="1" Background="LightSkyBlue">
+            <Grid Grid.Row="1">
+                <controls:DataGrid x:Name="dataGrid1" 
+                               Margin="5"
+                               AutoGenerateColumns="True"
+                               ItemsSource="{x:Bind Users}" />
+            </Grid>
+            <ScrollViewer Grid.Row="2" Background="LightSkyBlue">
                 <TextBlock Text="{x:Bind Example}" FontSize="30" FontFamily="Selawik" TextAlignment="Center" VerticalAlignment="Center"/>
             </ScrollViewer>
         </Grid>
