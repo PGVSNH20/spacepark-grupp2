@@ -18,3 +18,5 @@ Ska vi ha en meny?
 Er-diagram? :(
 
 Användaren ska kunna gå in på applikationen och parkera. 
+
+Fabian skapade ett grafiskt UI som vi kan använda oss av för projektet. 
