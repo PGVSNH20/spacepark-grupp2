@@ -7,12 +7,12 @@ Use this file to fill in your documentation
 - Klasser som PersonClass, VehicleClass, ParkingClass, 
 - Enhetstester
 - Kolla vilken typ av person som behöver parkera
-- Kolla vilket typ av fordon? Fråga Stephan.
+- Kolla vilket typ av fordon?
 
 UX
 Vad ska synas på skärmen?
 Språk på applikationen? R2D2.
-Interagera med applikationen? Muspekare? Tangentbord? 
+Interagera med applikationen? Muspekare? Tangentbord?
 Ska vi ha en meny?
 
 Er-diagram? :(
