@@ -44,3 +44,6 @@ Databasen - vad behöver vi?
 - ParkeringsID
 
 Kicka användaren om hen inte är med i StarWarsfilmerna. Kicka användaren om hen försöker parkera ett fordon som inte är med i StarWarsfilmerna.
+
+Frågor:
+- Namnsystemet????
