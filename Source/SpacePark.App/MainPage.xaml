@@ -8,7 +8,12 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+    <Page.Resources>
+        <Style TargetType="Button">
+            <Setter Property="BorderThickness" Value="5" />
+            <Setter Property="Foreground" Value="Black" />
+        </Style>
+    </Page.Resources>
     <Grid>
         <Grid x:Name="RootGrid" Margin="0" Background="DarkSlateGray">
             <Grid.RowDefinitions>
@@ -26,10 +31,15 @@
                 <TextBlock Grid.Column="1" Text="SpacePark" FontSize="30" FontFamily="Selawik" TextAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
             <Grid Grid.Row="1">
-                <controls:DataGrid x:Name="dataGrid1" 
-                               Margin="5"
-                               AutoGenerateColumns="True"
-                               ItemsSource="{x:Bind Users}" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <controls:DataGrid Grid.Column="0" x:Name="dataGrid1" 
+                                   Margin="5"
+                                   AutoGenerateColumns="True"
+                                   ItemsSource="{x:Bind Users}" />
+                <ListView Grid.Column="1"></ListView>
             </Grid>
             <ScrollViewer Grid.Row="2" Background="LightSkyBlue">
                 <TextBlock Text="{x:Bind Example}" FontSize="30" FontFamily="Selawik" TextAlignment="Center" VerticalAlignment="Center"/>

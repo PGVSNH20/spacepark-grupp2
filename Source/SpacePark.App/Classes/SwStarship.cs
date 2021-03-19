@@ -8,14 +8,14 @@ namespace SpacePark.App.Classes
 {
     public class SwStarship
     {
-        public int StarshipID { get; set; }
-        public string Name { get; set; }
-        public int LengthInM { get; set; }
-        public bool BrandIsVolvo { get; set; }  
+        //public int StarshipID { get; set; }
+        public string Model { get; set; }
+        public double LengthInM { get; set; }
 
-        public SwStarship()
+        public SwStarship(string model, double length)
         {
-
+            Model = model;
+            LengthInM = length;
         }
     }
 }
