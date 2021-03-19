@@ -121,6 +121,7 @@
     </Compile>
     <Compile Include="Classes\Parking.cs" />
     <Compile Include="Classes\ParkingSpot.cs" />
+    <Compile Include="Classes\SwPeople.cs" />
     <Compile Include="Classes\SwShip.cs" />
     <Compile Include="Classes\SwStarship.cs" />
     <Compile Include="Classes\User.cs" />

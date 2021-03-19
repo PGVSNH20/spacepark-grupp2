@@ -9,13 +9,11 @@ namespace SpacePark.App.Classes
     public class User
     {
         public int UserID { get; set; }
-        public string ForeName { get; set; }
-        public string SurName { get; set; }
+        public string Name { get; set; }
 
-        public User(string foreName, string surName)
+        public User(string name)
         {
-            ForeName = foreName;
-            SurName = surName;
+            Name = name;
         }
     }
 }
