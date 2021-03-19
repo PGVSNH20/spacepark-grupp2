@@ -8,6 +8,7 @@ namespace SpacePark.App.Classes
 {
     public class User
     {
+        public int UserID { get; set; }
         public string ForeName { get; set; }
         public string SurName { get; set; }
 
