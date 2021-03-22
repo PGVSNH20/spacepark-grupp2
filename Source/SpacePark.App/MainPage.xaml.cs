@@ -47,7 +47,7 @@ namespace SpacePark.App
                 new User("Luke Skywalker")
             };
 
-            //CreatePerson("R2D2");
+            CreatePerson("Leia Organa");
 
         }
 
@@ -75,11 +75,12 @@ namespace SpacePark.App
 
         public async Task<bool> FindPerson(string fullName)
         {
+            
             try
             {
                 var client = new RestClient("https://swapi.dev/api/");
                 var request = new RestRequest($"people/?search={fullName}", DataFormat.Json);
-                var peopleResponse = await client.GetAsync<SwPeople.Root>(request);
+                var peopleResponse = client.Get<SwPeople.Root>(request).Data;
 
                 if (peopleResponse.count > 0)
                 {
@@ -90,12 +91,11 @@ namespace SpacePark.App
             {
                 throw new Exception(ex.Message);
             }
-
             return false;
         }
 
         public void CreatePerson(string fullName)
-        {
+        {           
             if (FindPerson(fullName).Result)
             {
                 Users.Add(new User(fullName));

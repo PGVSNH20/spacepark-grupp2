@@ -30,7 +30,7 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="1" Text="SpacePark" FontSize="30" FontFamily="Selawik" TextAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
-            <Grid Grid.Row="1" Background="NavajoWhite">
+            <Grid Grid.Row="1" Background="Olive">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
