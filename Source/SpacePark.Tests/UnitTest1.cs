@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using SpacePark.App;
 
 namespace SpacePark.Tests
 {
@@ -10,8 +11,9 @@ namespace SpacePark.Tests
         }
 
         [Test]
-        public void Test1()
+        public void WhenFindingStarwarsCharacther_ExpectPersonResponse()
         {
+            
             Assert.Pass();
         }
     }
