@@ -34,49 +34,66 @@ namespace SpacePark.App
         public MainPage()
         {
             this.InitializeComponent();
-            
+
             FetchStarships();
 
-            
+
             Users = new List<User>
             {
                 new User("Nisse Jonsson"),
                 new User("Luke Skywalker")
             };
 
-            CreatePerson("R2D2");
+            //CreatePerson("R2D2");
 
         }
 
         private async void FetchStarships()
         {
-            var client = new RestClient("https://swapi.dev/api/");
-            var request = new RestRequest("starships/", DataFormat.Json);
-            var peopleResponse = await client.GetAsync<SwShip.Root>(request);
-
-            foreach (var result in peopleResponse.results)
+            string originalPath = "starships/?page=";
+            int page = 1;
+            string next;
+            do
             {
-                StarShips.Add(new SwStarship(result.model, double.Parse(result.length)));
-            }
+                var client = new RestClient("https://swapi.dev/api/");
+                var request = new RestRequest(originalPath + page, DataFormat.Json);
+                var peopleResponse = await client.GetAsync<SwShip.Root>(request);
+
+                next = peopleResponse.next;
+                page++;
+
+                foreach (var result in peopleResponse.results)
+                {
+                    StarShips.Add(new SwStarship(result.model, double.Parse(result.length)));
+                }
+
+            } while (next != null);
         }
 
         public async Task<bool> FindPerson(string fullName)
         {
-            var client = new RestClient("https://swapi.dev/api/");
-            var request = new RestRequest($"people/?search={fullName}", DataFormat.Json);
-            var peopleResponse = await client.GetAsync<SwPeople.Root>(request);
-
-            if(peopleResponse.count > 0)
+            try
             {
-                return true;
-            }          
-            
-            return false;           
+                var client = new RestClient("https://swapi.dev/api/");
+                var request = new RestRequest($"people/?search={fullName}", DataFormat.Json);
+                var peopleResponse = await client.GetAsync<SwPeople.Root>(request);
+
+                if (peopleResponse.count > 0)
+                {
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+            return false;
         }
 
         public void CreatePerson(string fullName)
         {
-            if(FindPerson(fullName).Result)
+            if (FindPerson(fullName).Result)
             {
                 Users.Add(new User(fullName));
             }
