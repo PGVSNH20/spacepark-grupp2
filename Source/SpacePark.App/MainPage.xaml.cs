@@ -18,6 +18,7 @@ using RestSharp;
 using SpacePark.App.Classes;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -48,7 +49,6 @@ namespace SpacePark.App
             };
 
             CreatePerson("Leia Organa");
-
         }
 
         private async void FetchStarships()
