@@ -15,11 +15,10 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using RestSharp;
-using SpacePark.Classes;
+using SpacePark.App.Classes;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using SpacePark;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -32,7 +31,6 @@ namespace SpacePark.App
 
     public sealed partial class MainPage : Page
     {
-        
         public string Example = "Hello";
         public List<User> Users;
         public ObservableCollection<SwStarship> StarShips = new ObservableCollection<SwStarship>();
