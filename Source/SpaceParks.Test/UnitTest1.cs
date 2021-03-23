@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SpacePark.App;
-using SpacePark.App.Classes;
+using SpacePark;
+using SpacePark.Classes;
 
 namespace SpaceParks.Test
 {

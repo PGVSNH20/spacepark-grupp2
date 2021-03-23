@@ -40,12 +40,12 @@
                     <controls:DataGrid x:Name="dataGrid1" 
                                        Margin="5"
                                        AutoGenerateColumns="True"
-                                       ItemsSource="{x:Bind StarShips}" VerticalScrollBarVisibility="Auto" />
+                                       ItemsSource="{x:Bind starShips}" VerticalScrollBarVisibility="Auto" />
                 </Grid>
                 <controls:DataGrid Grid.Column="1" x:Name="dataGrid2" 
                                    Margin="5"
                                    AutoGenerateColumns="True"
-                                   ItemsSource="{x:Bind Users}" />
+                                   ItemsSource="{x:Bind users}" />
                 
                 <ListView Grid.Column="1"></ListView>
             </Grid>

@@ -119,12 +119,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Classes\Parking.cs" />
-    <Compile Include="Classes\ParkingSpot.cs" />
-    <Compile Include="Classes\SwPeople.cs" />
-    <Compile Include="Classes\SwShip.cs" />
-    <Compile Include="Classes\SwStarship.cs" />
-    <Compile Include="Classes\User.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
