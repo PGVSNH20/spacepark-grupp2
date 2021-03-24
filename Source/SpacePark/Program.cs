@@ -16,20 +16,33 @@ namespace SpacePark
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello SpacePark!");
+            bool isRunning = true;
 
-            //FetchStarships();
-
-
-            Users = new List<User>
+            do
             {
-                new User("Nisse Jonsson"),
-                new User("Luke Skywalker")
-            };
+                Console.WriteLine("Welcome to SpacePark, please enter your full name!");
 
-            CreatePerson("Leia Organa");
-            AddNameToTheDatabase("Miss Piggy");
-            ReadFromUsers();
+                string userInput = Console.ReadLine();
+
+
+                if (CreatePerson(userInput))
+                {
+                    FetchStarships();
+                    isRunning = false;
+                }
+                else if (userInput == string.Empty)
+                {
+                    ReadFromUsers();
+                }
+                else
+                {
+                    Console.WriteLine("Did you spell your name wrong? Try again.");
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+            } while (isRunning);
+
+            
         }
 
         private static void AddNameToTheDatabase(string name)
@@ -70,6 +83,7 @@ namespace SpacePark
                 foreach (var result in respone.results)
                 {
                     StarShips.Add(new SwStarship(result.model, double.Parse(result.length)));
+                    Console.WriteLine($"{result.model}, {StarShips.Count -1}");
                 }
 
             } while (next != null);
@@ -96,12 +110,14 @@ namespace SpacePark
             return false;
         }
 
-        public static void CreatePerson(string fullName)
+        public static bool CreatePerson(string fullName)
         {
             if (FindPerson(fullName).Result)
             {
-                Users.Add(new User(fullName));
+                AddNameToTheDatabase(fullName);
+                return true;
             }
+            return false;
         }
     }
 }
