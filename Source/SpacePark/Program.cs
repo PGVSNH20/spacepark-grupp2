@@ -44,7 +44,7 @@ namespace SpacePark
         private static void ReadFromUsers()
         {
             var context = new DBModel();
-            var users = context.Users.Where(x => x.Name == "Luke Skywalker").ToList();
+            var users = context.Users.Where(x => x.Name == "Miss Piggy").ToList();
 
             foreach (var user in users)
             {
