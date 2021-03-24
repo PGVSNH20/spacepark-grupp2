@@ -21,12 +21,13 @@ Användaren ska kunna gå in på applikationen och parkera.
 Kunna skriva in sitt namn. 
 
 TODO:
-- Använda EF och code first för att skriva till databasen. (false)
-- Testa RestSharp. (false)
-- Kunna prata med API / Swapi vilka saker som stämmer. (false)
+- Använda EF och code first för att skriva till databasen. (true)
+- Testa RestSharp. (true)
+- Kunna prata med API / Swapi vilka saker som stämmer. (true)
 - Behöver ett betalningssystem. (false)
 - Kunna ta emot userinput. (false)
 - Skapa lite enhetstester. (false)
+- Kunna visa en lista på alla registrerade användare (false)
 
 Fabian skapade ett grafiskt UI som vi kan använda oss av för projektet. 
 
