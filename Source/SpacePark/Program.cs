@@ -75,15 +75,16 @@ namespace SpacePark
             {
                 var client = new RestClient("https://swapi.dev/api/");
                 var request = new RestRequest(originalPath + page, DataFormat.Json);
-                var respone = await client.GetAsync<SwShip.Root>(request);
+                var response = await client.GetAsync<SwShip.Root>(request);
 
-                next = respone.next;
+                next = response.next;
                 page++;
 
-                foreach (var result in respone.results)
+                foreach (var result in response.results)
                 {
-                    StarShips.Add(new SwStarship(result.model, double.Parse(result.length)));
-                    Console.WriteLine($"{result.model}, {StarShips.Count -1}");
+                    string fixedLength = result.length.Replace(".", ",");
+                    StarShips.Add(new SwStarship(result.model, double.Parse(fixedLength)));
+                    Console.WriteLine($"{StarShips.Count - 1}: {result.model}");
                 }
 
             } while (next != null);
@@ -91,7 +92,6 @@ namespace SpacePark
 
         public static async Task<bool> FindPerson(string fullName)
         {
-
             try
             {
                 var client = new RestClient("https://swapi.dev/api/");
