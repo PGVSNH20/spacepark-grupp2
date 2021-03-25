@@ -75,7 +75,7 @@ namespace SpacePark
             {
                 var client = new RestClient("https://swapi.dev/api/");
                 var request = new RestRequest(originalPath + page, DataFormat.Json);
-                var response = client.GetAsync<SwShip.Root>(request);
+                var response = await client.GetAsync<SwShip.Root>(request);
 
                 next = response.next;
                 page++;
