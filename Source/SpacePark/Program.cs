@@ -14,7 +14,7 @@ namespace SpacePark
         public static List<User> Users;
         public static ObservableCollection<SwStarship> StarShips = new ObservableCollection<SwStarship>();
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             bool isRunning = true;
 
@@ -27,7 +27,6 @@ namespace SpacePark
 
                 if (CreatePerson(userInput))
                 {
-                    FetchStarships();
                     isRunning = false;
                 }
                 else if (userInput == string.Empty)
@@ -42,31 +41,12 @@ namespace SpacePark
                 }
             } while (isRunning);
 
-            
+            await FetchStarships();
+            ReadFromUsers();
+            Console.WriteLine("Thanks for selling your soul to SpacePark©");
         }
 
-        private static void AddNameToTheDatabase(string name)
-        {
-            var context = new DBModel();
-
-            context.Users.Add(new User(name));
-
-            context.SaveChanges();
-        }
-
-        private static void ReadFromUsers()
-        {
-            var context = new DBModel();
-            var users = context.Users.Where(x => x.Name == "Miss Piggy").ToList();
-
-            foreach (var user in users)
-            {
-                Console.WriteLine($"ID: {user.UserID}, Name: {user.Name}");
-
-            }
-        }
-
-        private static async void FetchStarships()
+        private static async Task FetchStarships()
         {
             string originalPath = "starships/?page=";
             int page = 1;
@@ -86,7 +66,6 @@ namespace SpacePark
                     StarShips.Add(new SwStarship(result.model, double.Parse(fixedLength)));
                     Console.WriteLine($"{StarShips.Count - 1}: {result.model}");
                 }
-
             } while (next != null);
         }
 
@@ -96,11 +75,14 @@ namespace SpacePark
             {
                 var client = new RestClient("https://swapi.dev/api/");
                 var request = new RestRequest($"people/?search={fullName}", DataFormat.Json);
-                var peopleResponse = client.Get<SwPeople.Root>(request).Data;
+                var peopleResponse = await client.GetAsync<SwPeople.Root>(request);
 
-                if (peopleResponse.count > 0)
+                foreach (var result in peopleResponse.results)
                 {
-                    return true;
+                    if (result.name.ToLower() == fullName.ToLower())
+                    {
+                        return true;
+                    }
                 }
             }
             catch (Exception ex)
@@ -118,6 +100,26 @@ namespace SpacePark
                 return true;
             }
             return false;
+        }
+
+        private static void AddNameToTheDatabase(string name)
+        {
+            var context = new DBModel();
+
+            context.Users.Add(new User(name));
+
+            context.SaveChanges();
+        }
+
+        private static void ReadFromUsers()
+        {
+            var context = new DBModel();
+            var users = context.Users.Select(x => x).ToList();
+
+            foreach (var user in users)
+            {
+                Console.WriteLine($"ID: {user.UserID}, Name: {user.Name}");
+            }
         }
     }
 }
