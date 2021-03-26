@@ -169,7 +169,7 @@ namespace SpacePark
                 Console.WriteLine($"{Environment.NewLine}Parkingspot: {parkingSpot.ParkingSpotID}, " +
                     $"{Environment.NewLine}Parking started: {parkingSpot.ParkingStarted}, " +
                     $"{Environment.NewLine}Model: {parkingSpot.Vehicle}, " +
-                    $"{Environment.NewLine}Length: {parkingSpot.VehicleLength}" +
+                    $"{Environment.NewLine}Length: {parkingSpot.VehicleLength}m" +
                     $"{Environment.NewLine}User: {users[parkingSpot.UserID.GetValueOrDefault()].Name} {Environment.NewLine}");
             }
         }
