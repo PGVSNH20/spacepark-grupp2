@@ -16,6 +16,8 @@ namespace SpacePark
 
         static async Task Main(string[] args)
         {
+            // NewParkingToTheDatabase(12, 238000);
+
             bool isRunning = true;
 
             do
@@ -44,10 +46,11 @@ namespace SpacePark
             await FetchStarships();
 
             isRunning = true;
+            int starshipId;
 
             do {
                 Console.Write("Please enter your starship id: ");
-                if (int.TryParse(Console.ReadLine(), out int starshipId))
+                if (int.TryParse(Console.ReadLine(), out starshipId))
                 {
                     if (starshipId > 0 && starshipId <= StarShips.Count)
                     {
@@ -63,6 +66,8 @@ namespace SpacePark
                     Console.WriteLine("Couldn't parse starship id!");
                 }
             } while (isRunning);
+
+
 
             ReadFromUsers();
             Console.WriteLine("Thanks for selling your soul to SpacePark©");
@@ -142,6 +147,17 @@ namespace SpacePark
             {
                 Console.WriteLine($"ID: {user.UserID}, Name: {user.Name}");
             }
+        }
+
+        private static void NewParkingToTheDatabase(int hourlyRate, int length)
+        {
+            var parking = new Parking();
+            parking.HourlyRatePerMeter = hourlyRate;
+            parking.Length = length;
+
+            var context = new DBModel();
+            context.Parkings.Add(parking);
+            context.SaveChanges();
         }
     }
 }
