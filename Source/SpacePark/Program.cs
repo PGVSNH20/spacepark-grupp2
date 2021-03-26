@@ -148,7 +148,8 @@ namespace SpacePark
             var context = new DBModel();
 
             context.Users.Add(new User(name));
-
+            var users = context.Users.Select(x => x).ToList();
+            CurrentUserID = users.Count();
             context.SaveChanges();
         }
 
