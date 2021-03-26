@@ -15,10 +15,11 @@ namespace SpacePark
         public static List<SwStarship> StarShips = new List<SwStarship>();
         public static int CurrentUserID;
         public static int CurrentStarshipID;
+        public static int CurrentParkingID = 0;
 
         static async Task Main(string[] args)
         {
-            // NewParkingToTheDatabase(12, 238000);
+            //NewParkingToTheDatabase(12, 238000);
 
             bool isRunning = true;
 
@@ -35,6 +36,7 @@ namespace SpacePark
                 }
                 else if (userInput == string.Empty)
                 {
+                    ReadParkingSpots();
                     ReadFromUsers();
                 }
                 else
@@ -151,11 +153,16 @@ namespace SpacePark
 
         private static void AddParkingSpotToTheDatabase()
         {
-            var context = new DBModel();
-
-            context.ParkingSpots.Add(new ParkingSpot(0, CurrentUserID, StarShips[CurrentStarshipID].Model, StarShips[CurrentStarshipID].LengthInM));
-
-            context.SaveChanges();
+            if (CheckAvailability(StarShips[CurrentStarshipID].LengthInM))
+            {
+                var context = new DBModel();
+                context.ParkingSpots.Add(new ParkingSpot(0, CurrentUserID, StarShips[CurrentStarshipID].Model, StarShips[CurrentStarshipID].LengthInM));
+                context.SaveChanges();
+            }
+            else
+            {
+                Console.WriteLine("fuck off cuz you're too big");
+            } 
         }
 
         private static void ReadParkingSpots()
@@ -185,7 +192,7 @@ namespace SpacePark
             }
         }
 
-        private static void NewParkingToTheDatabase(int hourlyRate, int length)
+        private static void NewParkingToTheDatabase(int hourlyRate, double length)
         {
             var parking = new Parking();
             parking.HourlyRatePerMeter = hourlyRate;
@@ -194,6 +201,19 @@ namespace SpacePark
             var context = new DBModel();
             context.Parkings.Add(parking);
             context.SaveChanges();
+        }
+
+        private static bool CheckAvailability(double length)
+        {
+            var context = new DBModel();
+            double maxLength = context.Parkings.ToList()[CurrentParkingID].Length;
+            var occupiedLength = context.ParkingSpots.Sum(x => x.VehicleLength);
+
+            if(length + occupiedLength > maxLength)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
