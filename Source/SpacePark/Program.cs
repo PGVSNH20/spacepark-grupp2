@@ -12,7 +12,9 @@ namespace SpacePark
     class Program
     {
         public static List<User> Users;
-        public static ObservableCollection<SwStarship> StarShips = new ObservableCollection<SwStarship>();
+        public static List<SwStarship> StarShips = new List<SwStarship>();
+        public static int CurrentUserID;
+        public static int CurrentStarshipID;
 
         static async Task Main(string[] args)
         {
@@ -46,13 +48,14 @@ namespace SpacePark
             await FetchStarships();
 
             isRunning = true;
-            int starshipId;
+            
 
-            do {
+            do
+            {
                 Console.Write("Please enter your starship id: ");
-                if (int.TryParse(Console.ReadLine(), out starshipId))
+                if (int.TryParse(Console.ReadLine(), out CurrentStarshipID))
                 {
-                    if (starshipId > 0 && starshipId <= StarShips.Count)
+                    if (CurrentStarshipID > 0 && CurrentStarshipID <= StarShips.Count)
                     {
                         isRunning = false;
                     }
@@ -61,8 +64,8 @@ namespace SpacePark
                         Console.WriteLine("You entered an invalid starship id!");
                     }
                 }
-                else 
-                { 
+                else
+                {
                     Console.WriteLine("Couldn't parse starship id!");
                 }
             } while (isRunning);
@@ -128,6 +131,17 @@ namespace SpacePark
             }
             return false;
         }
+        private static void AddParkingSpotToTheDatabase(int StarshipID)
+        {
+            var context = new DBModel();
+
+            context.ParkingSpots.Add(new ParkingSpot(0, CurrentUserID, StarShips[CurrentStarshipID].Model, StarShips[CurrentStarshipID].LengthInM));
+
+            context.SaveChanges();
+        }
+
+
+
 
         private static void AddNameToTheDatabase(string name)
         {
