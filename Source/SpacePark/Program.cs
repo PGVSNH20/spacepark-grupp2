@@ -71,6 +71,7 @@ namespace SpacePark
             } while (isRunning);
 
             AddParkingSpotToTheDatabase();
+            ReadParkingSpots();
             ReadFromUsers();
             Console.WriteLine("Thanks for selling your soul to SpacePark©");
         }
@@ -155,6 +156,22 @@ namespace SpacePark
             context.ParkingSpots.Add(new ParkingSpot(0, CurrentUserID, StarShips[CurrentStarshipID].Model, StarShips[CurrentStarshipID].LengthInM));
 
             context.SaveChanges();
+        }
+
+        private static void ReadParkingSpots()
+        {
+            var context = new DBModel();
+            var parkingSpots = context.ParkingSpots.Select(x => x).ToList();
+            var users = context.Users.Select(x => x).ToList();
+
+            foreach (var parkingSpot in parkingSpots)
+            {
+                Console.WriteLine($"{Environment.NewLine}Parkingspot: {parkingSpot.ParkingSpotID}, " +
+                    $"{Environment.NewLine}Parking started: {parkingSpot.ParkingStarted}, " +
+                    $"{Environment.NewLine}Model: {parkingSpot.Vehicle}, " +
+                    $"{Environment.NewLine}Length: {parkingSpot.VehicleLength}" +
+                    $"{Environment.NewLine}User: {users[parkingSpot.UserID.GetValueOrDefault()].Name} {Environment.NewLine}");
+            }
         }
                 
         private static void ReadFromUsers()
