@@ -166,9 +166,9 @@ namespace SpacePark
 
             foreach (var parkingSpot in parkingSpots)
             {
-                Console.WriteLine($"{Environment.NewLine}Parkingspot: {parkingSpot.ParkingSpotID}, " +
-                    $"{Environment.NewLine}Parking started: {parkingSpot.ParkingStarted}, " +
-                    $"{Environment.NewLine}Model: {parkingSpot.Vehicle}, " +
+                Console.WriteLine($"{Environment.NewLine}Parkingspot: {parkingSpot.ParkingSpotID}" +
+                    $"{Environment.NewLine}Parking started: {parkingSpot.ParkingStarted}" +
+                    $"{Environment.NewLine}Model: {parkingSpot.Vehicle}" +
                     $"{Environment.NewLine}Length: {parkingSpot.VehicleLength}m" +
                     $"{Environment.NewLine}User: {users[parkingSpot.UserID.GetValueOrDefault()].Name} {Environment.NewLine}");
             }
