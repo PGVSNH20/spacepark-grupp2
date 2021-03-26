@@ -42,6 +42,28 @@ namespace SpacePark
             } while (isRunning);
 
             await FetchStarships();
+
+            isRunning = true;
+
+            do {
+                Console.Write("Please enter your starship id: ");
+                if (int.TryParse(Console.ReadLine(), out int starshipId))
+                {
+                    if (starshipId > 0 && starshipId <= StarShips.Count)
+                    {
+                        isRunning = false;
+                    }
+                    else
+                    {
+                        Console.WriteLine("You entered an invalid starship id!");
+                    }
+                }
+                else 
+                { 
+                    Console.WriteLine("Couldn't parse starship id!");
+                }
+            } while (isRunning);
+
             ReadFromUsers();
             Console.WriteLine("Thanks for selling your soul to SpacePark©");
         }
