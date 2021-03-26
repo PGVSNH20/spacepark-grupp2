@@ -26,7 +26,7 @@ namespace SpacePark
             {
                 Console.WriteLine("Welcome to SpacePark, please enter your full name!");
 
-                string userInput = Console.ReadLine();
+                string userInput = Console.ReadLine().ToUpper();
 
 
                 if (CreatePerson(userInput))
@@ -70,8 +70,7 @@ namespace SpacePark
                 }
             } while (isRunning);
 
-
-
+            AddParkingSpotToTheDatabase();
             ReadFromUsers();
             Console.WriteLine("Thanks for selling your soul to SpacePark©");
         }
@@ -99,6 +98,23 @@ namespace SpacePark
             } while (next != null);
         }
 
+        public static bool CreatePerson(string fullName)
+        {
+            var context = new DBModel();
+            int index = context.Users.ToList().FindIndex(x => x.Name == fullName);
+            if (index == -1)
+            {
+                if (FindPerson(fullName).Result)
+                {
+                    AddNameToTheDatabase(fullName.ToUpper());
+                    return true;
+                }
+                return false;
+            }
+            CurrentUserID = index;
+            return true;
+        }
+
         public static async Task<bool> FindPerson(string fullName)
         {
             try
@@ -122,27 +138,6 @@ namespace SpacePark
             return false;
         }
 
-        public static bool CreatePerson(string fullName)
-        {
-            if (FindPerson(fullName).Result)
-            {
-                AddNameToTheDatabase(fullName);
-                return true;
-            }
-            return false;
-        }
-        private static void AddParkingSpotToTheDatabase(int StarshipID)
-        {
-            var context = new DBModel();
-
-            context.ParkingSpots.Add(new ParkingSpot(0, CurrentUserID, StarShips[CurrentStarshipID].Model, StarShips[CurrentStarshipID].LengthInM));
-
-            context.SaveChanges();
-        }
-
-
-
-
         private static void AddNameToTheDatabase(string name)
         {
             var context = new DBModel();
@@ -153,6 +148,15 @@ namespace SpacePark
             context.SaveChanges();
         }
 
+        private static void AddParkingSpotToTheDatabase()
+        {
+            var context = new DBModel();
+
+            context.ParkingSpots.Add(new ParkingSpot(0, CurrentUserID, StarShips[CurrentStarshipID].Model, StarShips[CurrentStarshipID].LengthInM));
+
+            context.SaveChanges();
+        }
+                
         private static void ReadFromUsers()
         {
             var context = new DBModel();
