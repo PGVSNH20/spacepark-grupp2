@@ -10,22 +10,29 @@ using SpacePark.Classes;
 namespace SpacePark
 {
     class Program
+
+        
     {
         public static List<User> Users;
         public static List<SwStarship> StarShips = new List<SwStarship>();
         public static int CurrentUserID;
         public static int CurrentStarshipID;
         public static int CurrentParkingID = 0;
-
+        
         static async Task Main(string[] args)
         {
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.Clear();
+
             //NewParkingToTheDatabase(12, 238000);
 
             bool isRunning = true;
 
             do
             {
-                Console.WriteLine("Welcome to SpacePark, please enter your full name!");
+
+                Console.WriteLine("Welcome to SpacePark, please enter your full name!\n");
 
                 string userInput = Console.ReadLine().ToUpper();
 
@@ -41,6 +48,7 @@ namespace SpacePark
                 }
                 else
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Did you spell your name wrong? Try again.");
                     Console.ReadKey();
                     Console.Clear();
@@ -54,7 +62,8 @@ namespace SpacePark
 
             do
             {
-                Console.Write("Please enter your starship id: ");
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.Write("\nPlease enter your starship id: ");
                 if (int.TryParse(Console.ReadLine(), out CurrentStarshipID))
                 {
                     if (CurrentStarshipID > 0 && CurrentStarshipID <= StarShips.Count)
@@ -63,11 +72,13 @@ namespace SpacePark
                     }
                     else
                     {
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("You entered an invalid starship id!");
                     }
                 }
                 else
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Couldn't parse starship id!");
                 }
             } while (isRunning);
@@ -75,6 +86,8 @@ namespace SpacePark
             AddParkingSpotToTheDatabase();
             ReadParkingSpots();
             ReadFromUsers();
+            Console.BackgroundColor = ConsoleColor.Red;
+            Console.ForegroundColor = ConsoleColor.Black;
             Console.WriteLine("Thanks for selling your soul to SpacePark©");
         }
 
@@ -96,6 +109,7 @@ namespace SpacePark
                 {
                     string fixedLength = result.length.Replace(".", ",");
                     StarShips.Add(new SwStarship(result.model, double.Parse(fixedLength)));
+                    Console.ForegroundColor = ConsoleColor.Magenta;
                     Console.WriteLine($"{StarShips.Count - 1}: {result.model}");
                 }
             } while (next != null);
@@ -161,6 +175,7 @@ namespace SpacePark
             }
             else
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("fuck off cuz you're too big");
             } 
         }
@@ -173,6 +188,7 @@ namespace SpacePark
 
             foreach (var parkingSpot in parkingSpots)
             {
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"{Environment.NewLine}Parkingspot: {parkingSpot.ParkingSpotID}" +
                     $"{Environment.NewLine}Parking started: {parkingSpot.ParkingStarted}" +
                     $"{Environment.NewLine}Model: {parkingSpot.Vehicle}" +
