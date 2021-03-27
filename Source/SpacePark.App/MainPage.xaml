@@ -1,0 +1,57 @@
+﻿<Page
+    x:Class="SpacePark.App.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SpacePark.App"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+        <Style TargetType="Button">
+            <Setter Property="BorderThickness" Value="5" />
+            <Setter Property="Foreground" Value="Black" />
+        </Style>
+    </Page.Resources>
+    <Grid>
+        <Grid x:Name="RootGrid" Margin="0" Background="DarkSlateGray">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Name="Header" MinHeight="50" Background="Wheat">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="1" Text="SpacePark" FontSize="30" FontFamily="Selawik" TextAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Grid.Row="1" Background="Olive">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <controls:DataGrid x:Name="dataGrid1" 
+                                       Margin="5"
+                                       AutoGenerateColumns="True"
+                                       ItemsSource="{x:Bind starShips}" VerticalScrollBarVisibility="Auto" />
+                </Grid>
+                <controls:DataGrid Grid.Column="1" x:Name="dataGrid2" 
+                                   Margin="5"
+                                   AutoGenerateColumns="True"
+                                   ItemsSource="{x:Bind users}" />
+                
+                <ListView Grid.Column="1"></ListView>
+            </Grid>
+            <ScrollViewer Grid.Row="2" Background="LightSkyBlue">
+                <TextBlock Text="{x:Bind Example}" FontSize="30" FontFamily="Selawik" TextAlignment="Center" VerticalAlignment="Center"/>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Page>
