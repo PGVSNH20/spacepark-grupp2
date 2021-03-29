@@ -29,14 +29,14 @@ namespace SpacePark
             do
             {
                 Console.ForegroundColor = ConsoleColor.Black;
-                Console.WriteLine("Welcome to SpacePark, please enter your full name!\n");
+                Console.WriteLine();
+                Console.WriteLine("Welcome to SpacePark, please enter your full name or your parking ID to check out!\n");
 
                 string userInput = Console.ReadLine().ToUpper();
 
                 if (int.TryParse(userInput, out int checkoutID))
                 {
                     CheckoutParking(checkoutID);
-                    break;
                 }
                 else if (CreatePerson(userInput))
                 {
@@ -66,7 +66,7 @@ namespace SpacePark
                 Console.Write("\nPlease enter your starship id: ");
                 if (int.TryParse(Console.ReadLine(), out CurrentStarshipID))
                 {
-                    if (CurrentStarshipID > 0 && CurrentStarshipID <= StarShips.Count)
+                    if (CurrentStarshipID >= 0 && CurrentStarshipID <= StarShips.Count)
                     {
                         isRunning = false;
                     }
@@ -95,18 +95,25 @@ namespace SpacePark
         private static void CheckoutParking(int checkoutID)
         {
             var context = new DBModel();
-            var parkingSpots = context.ParkingSpots.Select(x => x).ToList();
-            var parkingSpot = parkingSpots[checkoutID-1];
+            var parkingSpots = context.ParkingSpots.Where(x => x.ParkingSpotID == checkoutID).ToList();
+            if (parkingSpots.Count == 0)
+            {
+                Console.WriteLine("No ship found there, who are you paying for really?");
+                return;
+            }
+            var parkingSpot = parkingSpots[0];
             var hoursParked = CheckHoursParked(parkingSpot.ParkingStarted, DateTime.Now);
             var parkings = context.Parkings.Where(x => x.ParkingID == parkingSpot.ParkingID).ToList();
             var parking = parkings[0];
             var cost = parking.HourlyRatePerMeter * hoursParked * parkingSpot.VehicleLength;
-            var user = context.Users.Where(x => x.UserID == parkingSpot.UserID+1).ToList()[0];
+            var user = context.Users.Where(x => x.UserID == parkingSpot.UserID).ToList()[0];
 
             Random rnd = new Random();
-            if (rnd.Next(3000000) < cost)
+            var money = rnd.Next(3000000);
+            Console.WriteLine($"You have {money}gc, I wonder if it will be enough?");
+            if (money < cost)
             {
-                Console.ForegroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.DarkRed;
                 Console.WriteLine("Oh no, you're poor. Don't worry, we'll just sell your ship, no biggy.");
                 return;
             }
@@ -201,7 +208,7 @@ namespace SpacePark
             if (CheckAvailability(StarShips[CurrentStarshipID].LengthInM))
             {
                 var context = new DBModel();
-                context.ParkingSpots.Add(new ParkingSpot(CurrentParkingID, CurrentUserID, StarShips[CurrentStarshipID].Model, StarShips[CurrentStarshipID].LengthInM));
+                context.ParkingSpots.Add(new ParkingSpot(CurrentParkingID, CurrentUserID + 1, StarShips[CurrentStarshipID].Model, StarShips[CurrentStarshipID].LengthInM));
                 context.SaveChanges();
             }
             else
@@ -224,7 +231,7 @@ namespace SpacePark
                     $"{Environment.NewLine}Parking started: {parkingSpot.ParkingStarted}" +
                     $"{Environment.NewLine}Model: {parkingSpot.Vehicle}" +
                     $"{Environment.NewLine}Length: {parkingSpot.VehicleLength}m" +
-                    $"{Environment.NewLine}User: {users[parkingSpot.UserID.GetValueOrDefault()].Name} {Environment.NewLine}");
+                    $"{Environment.NewLine}User: {users[parkingSpot.UserID.GetValueOrDefault() - 1].Name} {Environment.NewLine}");
             }
         }
                 
@@ -255,7 +262,7 @@ namespace SpacePark
             var context = new DBModel();
             if (context.Parkings.Count() > 0)
             {
-                double maxLength = context.Parkings.ToList()[CurrentParkingID].Length;
+                double maxLength = context.Parkings.ToList()[CurrentParkingID - 1].Length;
                 var occupiedLength = context.ParkingSpots.Sum(x => x.VehicleLength);
 
                 if (length + occupiedLength > maxLength)
