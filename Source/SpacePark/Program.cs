@@ -22,8 +22,9 @@ namespace SpacePark
             Console.ForegroundColor = ConsoleColor.Black;
             Console.Clear();
 
+            //Uncomment to add a parking house
             //NewParkingToTheDatabase(12, 238000);
-
+            
             bool isRunning = true;
 
             do
@@ -34,19 +35,23 @@ namespace SpacePark
 
                 string userInput = Console.ReadLine().ToUpper();
 
+                //If int, checkout from parking
                 if (int.TryParse(userInput, out int checkoutID))
                 {
                     CheckoutParking(checkoutID);
                 }
+                //Discrimina...check that user/person is credible
                 else if (CreatePerson(userInput))
                 {
                     isRunning = false;
                 }
+                //Dev tool, if no input, show existing data
                 else if (userInput == string.Empty)
                 {
                     ReadParkingSpots();
                     ReadFromUsers();
                 }
+                //User is not credible
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -56,6 +61,7 @@ namespace SpacePark
                 }
             } while (isRunning);
 
+            //Fetch a list of all starships from SWAPI
             await FetchStarships();
 
             isRunning = true;
@@ -66,6 +72,7 @@ namespace SpacePark
                 Console.Write("\nPlease enter your starship id: ");
                 if (int.TryParse(Console.ReadLine(), out CurrentStarshipID))
                 {
+                    //Check if valid starship was chosen
                     if (CurrentStarshipID >= 0 && CurrentStarshipID <= StarShips.Count)
                     {
                         isRunning = false;
@@ -92,22 +99,33 @@ namespace SpacePark
             Console.WriteLine("Thanks for selling your soul to SpacePark©");
         }
 
+        /// <summary>
+        /// Checkout from parking, writes invoice and removes parkingspot.
+        /// </summary>
+        /// <param name="checkoutID">ID of the parkingspot where the vehicle is parked</param>
         private static void CheckoutParking(int checkoutID)
         {
+            //Connect to database
             var context = new DBModel();
+            //Get all parkingspots
             var parkingSpots = context.ParkingSpots.Where(x => x.ParkingSpotID == checkoutID).ToList();
             if (parkingSpots.Count == 0)
             {
                 Console.WriteLine("No ship found there, who are you paying for really?");
                 return;
             }
+            //Get the correct parkingspot (could be done better, yes)
             var parkingSpot = parkingSpots[0];
+            //Check for how long the vehicle was parked, rounded up to closest hour
             var hoursParked = CheckHoursParked(parkingSpot.ParkingStarted, DateTime.Now);
-            var parkings = context.Parkings.Where(x => x.ParkingID == parkingSpot.ParkingID).ToList();
-            var parking = parkings[0];
+            //Find the parkingspot
+            var parking = context.Parkings.Where(x => x.ParkingID == parkingSpot.ParkingID).ToList()[0];
+            //Calculate cost
             var cost = parking.HourlyRatePerMeter * hoursParked * parkingSpot.VehicleLength;
+            //Get related user for invoice
             var user = context.Users.Where(x => x.UserID == parkingSpot.UserID).ToList()[0];
 
+            //Randomize money, since we aren't evil enough to know their economy
             Random rnd = new Random();
             var money = rnd.Next(3000000);
             Console.WriteLine($"You have {money}gc, I wonder if it will be enough?");
@@ -118,17 +136,27 @@ namespace SpacePark
                 return;
             }
 
+            //Remove parkingspot from database and give user an invoice. No rollbacking in case of error now.
             context.ParkingSpots.Remove(parkingSpot);
             context.SaveChanges();
             CreateInvoice(user.Name, hoursParked, cost);
         }
 
+        /// <summary>
+        /// Print invoice for user.
+        /// </summary>
+        /// <param name="userName">Name of the user</param>
+        /// <param name="hoursParked">How long the user parked</param>
+        /// <param name="cost">How much it cost to park in galactic credits</param>
         private static void CreateInvoice(string userName, double hoursParked, double cost)
         {
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine("Name: {0}, Parked for: {1}h, Cost: {2}gc", userName, hoursParked, cost);
         }
 
+        /// <summary>
+        /// Fetch starships from SWAPI and add to static list.
+        /// </summary>
         private static async Task FetchStarships()
         {
             string originalPath = "starships/?page=";
@@ -153,6 +181,11 @@ namespace SpacePark
             } while (next != null);
         }
 
+        /// <summary>
+        /// Adds new user if valid.
+        /// </summary>
+        /// <param name="fullName">Name of new user</param>
+        /// <returns>True if user is valid, false if not</returns>
         public static bool CreatePerson(string fullName)
         {
             var context = new DBModel();
@@ -170,6 +203,11 @@ namespace SpacePark
             return true;
         }
 
+        /// <summary>
+        /// Check with SWAPI if person exists in the Star Wars-universe
+        /// </summary>
+        /// <param name="fullName">Name of checked user</param>
+        /// <returns>True/false if they exist or not</returns>
         public static async Task<bool> FindPerson(string fullName)
         {
             try
@@ -193,6 +231,10 @@ namespace SpacePark
             return false;
         }
 
+        /// <summary>
+        /// Add new user to database and update active user.
+        /// </summary>
+        /// <param name="name">Name of new user</param>
         private static void AddNameToTheDatabase(string name)
         {
             var context = new DBModel();
@@ -203,8 +245,12 @@ namespace SpacePark
             CurrentUserID = users.Count();
         }
 
+        /// <summary>
+        /// Adds new parking spot to the database
+        /// </summary>
         private static void AddParkingSpotToTheDatabase()
         {
+            //Check that there's enough space
             if (CheckAvailability(StarShips[CurrentStarshipID].LengthInM))
             {
                 var context = new DBModel();
@@ -218,6 +264,9 @@ namespace SpacePark
             } 
         }
 
+        /// <summary>
+        /// Print list of existing parkingspots.
+        /// </summary>
         private static void ReadParkingSpots()
         {
             var context = new DBModel();
@@ -234,7 +283,10 @@ namespace SpacePark
                     $"{Environment.NewLine}User: {users[parkingSpot.UserID.GetValueOrDefault() - 1].Name} {Environment.NewLine}");
             }
         }
-                
+        
+        /// <summary>
+        /// Print list of existing users.
+        /// </summary>
         private static void ReadFromUsers()
         {
             var context = new DBModel();
@@ -246,6 +298,11 @@ namespace SpacePark
             }
         }
 
+        /// <summary>
+        /// Add new parking-place/-house/-lot
+        /// </summary>
+        /// <param name="hourlyRate">Cost per hour in galactic credits</param>
+        /// <param name="length">How long the parkinglot is</param>
         private static void NewParkingToTheDatabase(int hourlyRate, double length)
         {
             var parking = new Parking();
@@ -257,6 +314,11 @@ namespace SpacePark
             context.SaveChanges();
         }
 
+        /// <summary>
+        /// Check that something fits into the available space.
+        /// </summary>
+        /// <param name="length">Length of the incoming vehicle</param>
+        /// <returns>True if fits, false if not</returns>
         private static bool CheckAvailability(double length)
         {
             var context = new DBModel();
@@ -276,6 +338,12 @@ namespace SpacePark
             return false;
         }
 
+        /// <summary>
+        /// Check how long a vehicle has been parked, round up to closest hour.
+        /// </summary>
+        /// <param name="startDateTime">Start date and time of parking</param>
+        /// <param name="endDateTime">End date and time of parking</param>
+        /// <returns>Total hours parked rounded up</returns>
         private static double CheckHoursParked(DateTime startDateTime, DateTime endDateTime)
         {
             TimeSpan ts = endDateTime.Subtract(startDateTime);
