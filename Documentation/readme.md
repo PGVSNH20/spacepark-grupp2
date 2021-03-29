@@ -24,10 +24,10 @@ TODO:
 - Använda EF och code first för att skriva till databasen. (true)
 - Testa RestSharp. (true)
 - Kunna prata med API / Swapi vilka saker som stämmer. (true)
-- Behöver ett betalningssystem. (false)
-- Kunna ta emot userinput. (false)
+- Behöver ett betalningssystem. (true)
+- Kunna ta emot userinput. (true)
 - Skapa lite enhetstester. (false)
-- Kunna visa en lista på alla registrerade användare (false)
+- Kunna visa en lista på alla registrerade användare (true)
 
 Fabian skapade ett grafiskt UI som vi kan använda oss av för projektet. 
 
