@@ -2,20 +2,23 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using RestSharp;
 using SpacePark.App.Classes;
 using SpacePark.Classes;
+[assembly: InternalsVisibleTo("SpaceParks.Test")]
 
 namespace SpacePark
 {
-    class Program
+
+    public class Program
     {
         public static List<SwStarship> StarShips = new List<SwStarship>();
         public static int CurrentUserID;
         public static int CurrentStarshipID;
         public static int CurrentParkingID = 1;
-        
+
         static async Task Main(string[] args)
         {
             Console.BackgroundColor = ConsoleColor.White;
@@ -56,7 +59,7 @@ namespace SpacePark
                 }
             } while (isRunning);
 
-            await FetchStarships();
+            StarShips = await FetchStarships();
 
             isRunning = true;
 
@@ -96,12 +99,12 @@ namespace SpacePark
         {
             var context = new DBModel();
             var parkingSpots = context.ParkingSpots.Select(x => x).ToList();
-            var parkingSpot = parkingSpots[checkoutID-1];
+            var parkingSpot = parkingSpots[checkoutID - 1];
             var hoursParked = CheckHoursParked(parkingSpot.ParkingStarted, DateTime.Now);
             var parkings = context.Parkings.Where(x => x.ParkingID == parkingSpot.ParkingID).ToList();
             var parking = parkings[0];
             var cost = parking.HourlyRatePerMeter * hoursParked * parkingSpot.VehicleLength;
-            var user = context.Users.Where(x => x.UserID == parkingSpot.UserID+1).ToList()[0];
+            var user = context.Users.Where(x => x.UserID == parkingSpot.UserID + 1).ToList()[0];
 
             Random rnd = new Random();
             if (rnd.Next(3000000) < cost)
@@ -122,8 +125,9 @@ namespace SpacePark
             Console.WriteLine("Name: {0}, Parked for: {1}h, Cost: {2}gc", userName, hoursParked, cost);
         }
 
-        private static async Task FetchStarships()
+        internal static async Task<List<SwStarship>> FetchStarships()
         {
+            List<SwStarship> starships = new List<SwStarship>();
             string originalPath = "starships/?page=";
             int page = 1;
             string next;
@@ -139,11 +143,12 @@ namespace SpacePark
                 foreach (var result in response.results)
                 {
                     string fixedLength = result.length.Replace(".", ",");
-                    StarShips.Add(new SwStarship(result.model, double.Parse(fixedLength)));
-                    Console.ForegroundColor = ConsoleColor.Magenta;
+                    starships.Add(new SwStarship(result.model, double.Parse(fixedLength)));
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
                     Console.WriteLine($"{StarShips.Count - 1}: {result.model}");
                 }
             } while (next != null);
+            return starships;
         }
 
         public static bool CreatePerson(string fullName)
@@ -208,7 +213,7 @@ namespace SpacePark
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("fuck off cuz you're too big");
-            } 
+            }
         }
 
         private static void ReadParkingSpots()
@@ -227,7 +232,7 @@ namespace SpacePark
                     $"{Environment.NewLine}User: {users[parkingSpot.UserID.GetValueOrDefault()].Name} {Environment.NewLine}");
             }
         }
-                
+
         private static void ReadFromUsers()
         {
             var context = new DBModel();
