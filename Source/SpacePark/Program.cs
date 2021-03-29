@@ -31,7 +31,7 @@ namespace SpacePark
 
             do
             {
-
+                Console.ForegroundColor = ConsoleColor.Black;
                 Console.WriteLine("Welcome to SpacePark, please enter your full name!\n");
 
                 string userInput = Console.ReadLine().ToUpper();
@@ -88,6 +88,7 @@ namespace SpacePark
             ReadFromUsers();
             Console.BackgroundColor = ConsoleColor.Red;
             Console.ForegroundColor = ConsoleColor.Black;
+            Console.WriteLine();
             Console.WriteLine("Thanks for selling your soul to SpacePark©");
         }
 
@@ -188,7 +189,7 @@ namespace SpacePark
 
             foreach (var parkingSpot in parkingSpots)
             {
-                Console.ForegroundColor = ConsoleColor.Green;
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
                 Console.WriteLine($"{Environment.NewLine}Parkingspot: {parkingSpot.ParkingSpotID}" +
                     $"{Environment.NewLine}Parking started: {parkingSpot.ParkingStarted}" +
                     $"{Environment.NewLine}Model: {parkingSpot.Vehicle}" +
@@ -222,14 +223,20 @@ namespace SpacePark
         private static bool CheckAvailability(double length)
         {
             var context = new DBModel();
-            double maxLength = context.Parkings.ToList()[CurrentParkingID].Length;
-            var occupiedLength = context.ParkingSpots.Sum(x => x.VehicleLength);
-
-            if(length + occupiedLength > maxLength)
+            if (context.Parkings.Count() > 0)
             {
-                return false;
+                double maxLength = context.Parkings.ToList()[CurrentParkingID].Length;
+                var occupiedLength = context.ParkingSpots.Sum(x => x.VehicleLength);
+
+                if (length + occupiedLength > maxLength)
+                {
+                    return false;
+                }
+                return true;
             }
-            return true;
+
+            Console.WriteLine("There isn't even a parkingplace here, leave.");
+            return false;
         }
     }
 }
