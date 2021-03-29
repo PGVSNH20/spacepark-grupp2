@@ -10,14 +10,11 @@ using SpacePark.Classes;
 namespace SpacePark
 {
     class Program
-
-        
     {
-        public static List<User> Users;
         public static List<SwStarship> StarShips = new List<SwStarship>();
         public static int CurrentUserID;
         public static int CurrentStarshipID;
-        public static int CurrentParkingID = 0;
+        public static int CurrentParkingID = 1;
         
         static async Task Main(string[] args)
         {
@@ -36,8 +33,12 @@ namespace SpacePark
 
                 string userInput = Console.ReadLine().ToUpper();
 
-
-                if (CreatePerson(userInput))
+                if (int.TryParse(userInput, out int checkoutID))
+                {
+                    CheckoutParking(checkoutID);
+                    break;
+                }
+                else if (CreatePerson(userInput))
                 {
                     isRunning = false;
                 }
@@ -58,7 +59,6 @@ namespace SpacePark
             await FetchStarships();
 
             isRunning = true;
-            
 
             do
             {
@@ -90,6 +90,34 @@ namespace SpacePark
             Console.ForegroundColor = ConsoleColor.Black;
             Console.WriteLine();
             Console.WriteLine("Thanks for selling your soul to SpacePark©");
+        }
+
+        private static void CheckoutParking(int checkoutID)
+        {
+            var context = new DBModel();
+            var parkingSpots = context.ParkingSpots.Select(x => x).ToList();
+            var parkingSpot = parkingSpots[checkoutID - 1];
+            var hoursParked = CheckHoursParked(parkingSpot.ParkingStarted, DateTime.Now);
+            var parkings = context.Parkings.Where(x => x.ParkingID == parkingSpot.ParkingID).ToList();
+            var parking = parkings[0];
+            var cost = parking.HourlyRatePerMeter * hoursParked * parkingSpot.VehicleLength;
+            var user = context.Users.Where(x => x.UserID == parkingSpot.UserID).ToList()[0];
+
+            Random rnd = new Random();
+            if (rnd.Next(3000000) < cost)
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("Oh no, you're poor. Don't worry, we'll just sell your ship, no biggy.");
+                return;
+            }
+
+            CreateInvoice(user.Name, hoursParked, cost);
+        }
+
+        private static void CreateInvoice(string userName, double hoursParked, double cost)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.WriteLine("Name: {0}, Parked for: {1}h, Cost: {2}gc", userName, hoursParked, cost);
         }
 
         private static async Task FetchStarships()
@@ -162,8 +190,8 @@ namespace SpacePark
 
             context.Users.Add(new User(name));
             var users = context.Users.Select(x => x).ToList();
-            CurrentUserID = users.Count();
             context.SaveChanges();
+            CurrentUserID = users.Count();
         }
 
         private static void AddParkingSpotToTheDatabase()
@@ -171,7 +199,7 @@ namespace SpacePark
             if (CheckAvailability(StarShips[CurrentStarshipID].LengthInM))
             {
                 var context = new DBModel();
-                context.ParkingSpots.Add(new ParkingSpot(0, CurrentUserID, StarShips[CurrentStarshipID].Model, StarShips[CurrentStarshipID].LengthInM));
+                context.ParkingSpots.Add(new ParkingSpot(CurrentParkingID, CurrentUserID, StarShips[CurrentStarshipID].Model, StarShips[CurrentStarshipID].LengthInM));
                 context.SaveChanges();
             }
             else
@@ -237,6 +265,12 @@ namespace SpacePark
 
             Console.WriteLine("There isn't even a parkingplace here, leave.");
             return false;
+        }
+
+        private static double CheckHoursParked(DateTime startDateTime, DateTime endDateTime)
+        {
+            TimeSpan ts = endDateTime.Subtract(startDateTime);
+            return Math.Ceiling(ts.TotalHours);
         }
     }
 }
