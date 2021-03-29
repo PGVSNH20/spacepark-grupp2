@@ -96,12 +96,12 @@ namespace SpacePark
         {
             var context = new DBModel();
             var parkingSpots = context.ParkingSpots.Select(x => x).ToList();
-            var parkingSpot = parkingSpots[checkoutID - 1];
+            var parkingSpot = parkingSpots[checkoutID-1];
             var hoursParked = CheckHoursParked(parkingSpot.ParkingStarted, DateTime.Now);
             var parkings = context.Parkings.Where(x => x.ParkingID == parkingSpot.ParkingID).ToList();
             var parking = parkings[0];
             var cost = parking.HourlyRatePerMeter * hoursParked * parkingSpot.VehicleLength;
-            var user = context.Users.Where(x => x.UserID == parkingSpot.UserID).ToList()[0];
+            var user = context.Users.Where(x => x.UserID == parkingSpot.UserID+1).ToList()[0];
 
             Random rnd = new Random();
             if (rnd.Next(3000000) < cost)
@@ -111,6 +111,8 @@ namespace SpacePark
                 return;
             }
 
+            context.ParkingSpots.Remove(parkingSpot);
+            context.SaveChanges();
             CreateInvoice(user.Name, hoursParked, cost);
         }
 
