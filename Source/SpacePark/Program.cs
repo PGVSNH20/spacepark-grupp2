@@ -178,7 +178,7 @@ namespace SpacePark
                     string fixedLength = result.length.Replace(".", ",");
                     starships.Add(new SwStarship(result.model, double.Parse(fixedLength)));
                     Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    Console.WriteLine($"{StarShips.Count - 1}: {result.model}");
+                    Console.WriteLine($"{starships.Count -1} : {result.model}");
                 }
             } while (next != null);
             return starships;
